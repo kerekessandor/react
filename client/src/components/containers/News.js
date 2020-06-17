@@ -1,18 +1,55 @@
-import React from 'react';
-import NewsItemListing from '../presentation/NewsItemListing';
+import React from "react";
+import NewsItemListing from "../presentation/NewsItemListing";
+import { connect } from "react-redux";
+import { fetchNews } from "../../actions/actions";
 
 class News extends React.Component {
-    render() {
-        return (
-            <div>
-                <h2>News items</h2>
-                <ul>
-                    <li><NewsItemListing id="1" title="Mad owl torments drivers" teaser="An owl has been seen chasing cars in Bridlington"/></li>
-                    <li><NewsItemListing id="2" title="Owl steals post" teaser="Letters have gone missing in Wigan. Owl suspected."/></li>
-                </ul>
-            </div>
-        )
+  componentDidMount() {
+    var fakeNews = [
+      {
+        id: "1",
+        title: "Mad owl chases car",
+        teaser: "Mad owl seen tormenting drivers in Morecambe",
+      },
+      {
+        id: "2",
+        title: "Owl stowaway",
+        teaser: "Despicavble impersonates passenger to board flight to Luton",
+      },
+    ];
+    this.props.dispatch(fetchNews(fakeNews));
+  }
+
+  renderContent() {
+    switch (this.props.news) {
+      case null:
+        return <div>Sorry we have no news</div>;
+      default:
+        const newsItems = this.props.news.map(function (news, i) {
+          return (
+            <li key={i}>
+              <NewsItemListing data={news}></NewsItemListing>
+            </li>
+          );
+        });
+        return <ul>{newsItems}</ul>;
     }
+  }
+
+  render() {
+    return (
+      <div>
+        <h2>News items</h2>
+        {this.renderContent()}
+      </div>
+    );
+  }
 }
 
-export default News;
+const mapStateToProps = (state) => {
+  return {
+    news: state.news.news,
+  };
+};
+
+export default connect(mapStateToProps)(News);
