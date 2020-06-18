@@ -4,6 +4,7 @@ import axios from 'axios';
 export const fetchNews = () => {
     return async (dispatch) => {
         const result = await axios.get('/api/news/');
+        console.log(result);
         dispatch({
             type: actionTypes.NEWS_RECEIVED,
             news: result.data.data
